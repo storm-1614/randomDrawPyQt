@@ -35,6 +35,14 @@ QLabel {
 layout.addWidget(label)
 
 button = QPushButton("抽取")
+
+button.setStyleSheet("""
+    QPushButton {
+        font-size: 20px;
+        padding: 15px;
+    }
+""")
+
 layout.addWidget(button)
 
 window.setLayout(layout)

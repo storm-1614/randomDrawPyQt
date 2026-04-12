@@ -1,3 +1,5 @@
+#! env /bin/python
+
 import sys
 import random
 from PyQt5.QtGui import QFont
@@ -6,13 +8,19 @@ from PyQt5.QtCore import Qt
 
 app = QApplication(sys.argv)
 
+# 命令行参数
+if len(sys.argv) > 1:
+    name_file = sys.argv[1]
+else:
+    name_file = "./list/girl"
+
 
 class RandomDrawApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("random draw app")
         self.setGeometry(100, 100, 400, 300)
-        self.names = self.load_names("./list/list")
+        self.names = self.load_names(name_file)
         # 初始化布局
         self.base_layout = QVBoxLayout()
         # 标签（显示结果）
@@ -49,16 +57,23 @@ class RandomDrawApp(QWidget):
             }
         """)
 
-        self.random_button.clicked.connect(self.button_clicked)
+        self.random_button.clicked.connect(self.button_clicked)  # 绑定点击事件
         self.base_layout.addWidget(self.random_button)
         self.setLayout(self.base_layout)
 
+    # 绘制
     def draw(self):
         self.show()
 
+    # 按钮点击事件
     def button_clicked(self):
-        select_name = random.choice(self.names)
-        self.result_label.setText(select_name)
+        if self.names:
+            select_name = random.choice(self.names)
+            self.result_label.setText(select_name)
+            self.names.remove(select_name)
+        else:
+            print("列表为空，程序退出")
+            exit()
 
 
 random_draw = RandomDrawApp()

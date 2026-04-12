@@ -1,0 +1,7 @@
+# 忽略 list 文件夹下的文件
+list/
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea

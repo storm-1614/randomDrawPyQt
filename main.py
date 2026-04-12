@@ -12,7 +12,7 @@ app = QApplication(sys.argv)
 if len(sys.argv) > 1:
     name_file = sys.argv[1]
 else:
-    name_file = "./list/girl"
+    name_file = "./list/test"
 
 
 class RandomDrawApp(QWidget):

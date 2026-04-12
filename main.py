@@ -4,7 +4,15 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt
 
-name_list = ["A", "B", "C", "D"]
+# 测试用的列表
+name_test_list = ["A", "B", "C", "D"]
+
+def read_file(path)->list:
+    with open(path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    return lines
+
+name_list = read_file("./list/test")
 
 app = QApplication(sys.argv)
 

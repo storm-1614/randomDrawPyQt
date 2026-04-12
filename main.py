@@ -1,7 +1,10 @@
 import sys
+import random
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt
+
+name_list = ["A", "B", "C", "D"]
 
 app = QApplication(sys.argv)
 
@@ -28,7 +31,7 @@ label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 # 设置字体样式：CSS
 label.setStyleSheet("""
 QLabel {
-    color: #FF0000
+    color: #0000FF
 }
 """)
 
@@ -42,6 +45,15 @@ button.setStyleSheet("""
         padding: 15px;
     }
 """)
+
+
+# 按钮点击事件
+def button_clicked():
+    select_name = random.choice(name_list)
+    label.setText(select_name)
+
+# 连接 clicked 信号到 button_clicked 函数
+button.clicked.connect(button_clicked)
 
 layout.addWidget(button)
 

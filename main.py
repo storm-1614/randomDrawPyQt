@@ -3,7 +3,15 @@
 import sys
 import random
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QHBoxLayout,
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QPushButton,
+)
 from PyQt5.QtCore import Qt
 
 app = QApplication(sys.argv)
@@ -23,10 +31,13 @@ class RandomDrawApp(QWidget):
         self.names = self.load_names(name_file)
         # 初始化布局
         self.base_layout = QVBoxLayout()
+        self.button_layout = QHBoxLayout()
         # 标签（显示结果）
         self.result_label = QLabel("请抽签")
         # 按钮， 开始随机
         self.random_button = QPushButton("抽取")
+        # 选择文件
+        self.choose_file_button = QPushButton("选取文件")
 
     def load_names(self, path: str) -> list:
         with open(path, "r", encoding="utf-8") as f:
@@ -58,7 +69,19 @@ class RandomDrawApp(QWidget):
         """)
 
         self.random_button.clicked.connect(self.button_clicked)  # 绑定点击事件
-        self.base_layout.addWidget(self.random_button)
+
+        self.choose_file_button.setStyleSheet("""
+            QPushButton {
+                font-size = 20px;
+                padding: 15px;
+            }
+        """)
+
+        self.choose_file_button.clicked.connect(self.open_file)
+
+        self.button_layout.addWidget(self.choose_file_button)
+        self.button_layout.addWidget(self.random_button)
+        self.base_layout.addLayout(self.button_layout)
         self.setLayout(self.base_layout)
 
     # 绘制
@@ -74,6 +97,16 @@ class RandomDrawApp(QWidget):
         else:
             print("列表为空，程序退出")
             exit()
+
+    def open_file(self):
+        """
+        选择名单文件
+        """
+        file = QFileDialog()
+
+        files, _ = file.getOpenFileNames(self, "打开文件", ".", "")
+        self.names = self.load_names(files[0])
+        self.result_label.setText("请抽签")
 
 
 random_draw = RandomDrawApp()

@@ -2,6 +2,7 @@
 
 import sys
 import random
+import pandas
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QApplication,
@@ -20,8 +21,7 @@ app = QApplication(sys.argv)
 if len(sys.argv) > 1:
     name_file = sys.argv[1]
 else:
-    name_file = "./list/test"
-
+    name_file = ""
 
 class RandomDrawApp(QWidget):
     def __init__(self):
@@ -39,9 +39,15 @@ class RandomDrawApp(QWidget):
         # 选择文件
         self.choose_file_button = QPushButton("选取文件")
 
-    def load_names(self, path: str) -> list:
-        with open(path, "r", encoding="utf-8") as f:
-            lines = f.readlines()
+    def load_names(self, path = "") -> list:
+        # with open(path, "r", encoding="utf-8") as f:
+        #     lines = f.readlines()
+        if path == "":
+            path = self.open_file()
+
+        et_data = pandas.read_excel(path, header=None, names=["name", "number"], skiprows=1)  # pyright: ignore[reportArgumentType]
+        lines = et_data["name"].astype(str).tolist()
+
         return lines
 
     def init_UI(self):
@@ -77,7 +83,7 @@ class RandomDrawApp(QWidget):
             }
         """)
 
-        self.choose_file_button.clicked.connect(self.open_file)
+        self.choose_file_button.clicked.connect(self.choose_file_button_clicked)
 
         self.button_layout.addWidget(self.choose_file_button)
         self.button_layout.addWidget(self.random_button)
@@ -104,9 +110,11 @@ class RandomDrawApp(QWidget):
         """
         file = QFileDialog()
 
-        files, _ = file.getOpenFileNames(self, "打开文件", ".", "")
-        self.names = self.load_names(files[0])
-        self.result_label.setText("请抽签")
+        files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
+        return files[0]
+
+    def choose_file_button_clicked(self):
+        self.load_names(self.open_file())
 
 
 random_draw = RandomDrawApp()

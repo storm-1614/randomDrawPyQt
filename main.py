@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
+    QMessageBox,
     QWidget,
     QVBoxLayout,
     QLabel,
@@ -46,6 +47,7 @@ class RandomDrawApp(QWidget):
             path = self.open_file()
 
         et_data = pandas.read_excel(path, header=None, names=["name", "number"], skiprows=1)  # pyright: ignore[reportArgumentType]
+        et_data = et_data.dropna(subset=['name']) # 去除 nan 数据
         lines = et_data["name"].astype(str).tolist()
 
         return lines
@@ -101,7 +103,8 @@ class RandomDrawApp(QWidget):
             self.result_label.setText(select_name)
             self.names.remove(select_name)
         else:
-            print("列表为空，程序退出")
+            #print("列表为空，程序退出")
+            QMessageBox.warning(self, "列表为空, 程序退出", "列表为空, 程序退出", QMessageBox.Yes)
             exit()
 
     def open_file(self):
@@ -109,8 +112,10 @@ class RandomDrawApp(QWidget):
         选择名单文件
         """
         file = QFileDialog()
+        files: list[str] = []
 
-        files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
+        while (len(files)==0):
+            files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
         return files[0]
 
     def choose_file_button_clicked(self):

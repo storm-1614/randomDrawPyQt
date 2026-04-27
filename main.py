@@ -24,6 +24,7 @@ if len(sys.argv) > 1:
 else:
     name_file = ""
 
+
 class RandomDrawApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -40,14 +41,19 @@ class RandomDrawApp(QWidget):
         # 选择文件
         self.choose_file_button = QPushButton("选取文件")
 
-    def load_names(self, path = "") -> list:
+    def load_names(self, path="") -> list:
         # with open(path, "r", encoding="utf-8") as f:
         #     lines = f.readlines()
         if path == "":
             path = self.open_file()
 
-        et_data = pandas.read_excel(path, header=None, names=["name", "number"], skiprows=1)  # pyright: ignore[reportArgumentType]
-        et_data = et_data.dropna(subset=['name']) # 去除 nan 数据
+        et_data = pandas.read_excel(
+            path,
+            header=None,
+            names=["name", "number"],  # pyright: ignore[reportArgumentType]
+            skiprows=1,
+        )
+        et_data = et_data.dropna(subset=["name"])  # 去除 nan 数据
         lines = et_data["name"].astype(str).tolist()
 
         return lines
@@ -103,8 +109,10 @@ class RandomDrawApp(QWidget):
             self.result_label.setText(select_name)
             self.names.remove(select_name)
         else:
-            #print("列表为空，程序退出")
-            QMessageBox.warning(self, "列表为空, 程序退出", "列表为空, 程序退出", QMessageBox.Yes)
+            # print("列表为空，程序退出")
+            QMessageBox.warning(
+                self, "列表为空, 程序退出", "列表为空, 程序退出", QMessageBox.Yes
+            )
             exit()
 
     def open_file(self):
@@ -112,10 +120,20 @@ class RandomDrawApp(QWidget):
         选择名单文件
         """
         file = QFileDialog()
-        files: list[str] = []
 
-        while (len(files)==0):
-            files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
+        files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
+        while len(files) == 0:
+            none_file_messageBox = QMessageBox.warning(
+                self,
+                "没有选择文件，请重新选择",
+                "没有选择文件，请重新选择",
+                QMessageBox.Ok | QMessageBox.Close,
+            )
+            if none_file_messageBox == QMessageBox.Ok:
+                files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
+            elif none_file_messageBox == QMessageBox.Close:
+                exit(1)
+
         return files[0]
 
     def choose_file_button_clicked(self):

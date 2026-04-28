@@ -3,8 +3,8 @@
 import sys
 import random
 import pandas
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import (
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QPushButton,
 )
-from PyQt5.QtCore import Qt
+from PyQt6.QtCore import Qt
 
 app = QApplication(sys.argv)
 
@@ -69,7 +69,7 @@ class RandomDrawApp(QWidget):
 
         self.result_label.setStyleSheet("""
         QLabel {
-            color: #0000FF
+            color: #88c0d0
         }
         """)  # CSS 美化
 
@@ -111,7 +111,10 @@ class RandomDrawApp(QWidget):
         else:
             # print("列表为空，程序退出")
             QMessageBox.warning(
-                self, "列表为空, 程序退出", "列表为空, 程序退出", QMessageBox.Yes
+                self,
+                "列表为空, 程序退出",
+                "列表为空, 程序退出",
+                QMessageBox.StandardButton.Ok,
             )
             exit()
 
@@ -127,11 +130,11 @@ class RandomDrawApp(QWidget):
                 self,
                 "没有选择文件，请重新选择",
                 "没有选择文件，请重新选择",
-                QMessageBox.Ok | QMessageBox.Close,
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Close,
             )
-            if none_file_messageBox == QMessageBox.Ok:
+            if none_file_messageBox == QMessageBox.StandardButton.Ok:
                 files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
-            elif none_file_messageBox == QMessageBox.Close:
+            elif none_file_messageBox == QMessageBox.StandardButton.Close:
                 exit(1)
 
         return files[0]
@@ -143,4 +146,4 @@ class RandomDrawApp(QWidget):
 random_draw = RandomDrawApp()
 random_draw.init_UI()
 random_draw.draw()
-sys.exit(app.exec_())
+sys.exit(app.exec())

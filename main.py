@@ -136,11 +136,20 @@ class RandomDrawApp(QWidget):
                 files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
             elif none_file_messageBox == QMessageBox.StandardButton.Close:
                 exit(1)
-
         return files[0]
 
     def choose_file_button_clicked(self):
-        self.load_names(self.open_file())
+        file_path = self.open_file()
+        if file_path is None:
+            return
+        self.current_file_path = file_path
+        new_names = self.load_names(file_path)
+        if new_names:
+            self.names = new_names
+            self.result_label.setText(f"已加载{len(self.names)}人")
+        else:
+            self.names = []
+            self.result_label.setText("加载失败")
 
 
 random_draw = RandomDrawApp()

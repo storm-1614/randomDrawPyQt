@@ -125,8 +125,17 @@ class RandomDrawApp(QWidget):
         file = QFileDialog()
 
         files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
-        if not files:  # 用户取消直接返回None
-            return None
+        while len(files) == 0:
+            none_file_messageBox = QMessageBox.warning(
+                self,
+                "没有选择文件，请重新选择",
+                "没有选择文件，请重新选择",
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Close,
+            )
+            if none_file_messageBox == QMessageBox.StandardButton.Ok:
+                files, _ = file.getOpenFileNames(self, "打开文件", ".", "*.xlsx")
+            elif none_file_messageBox == QMessageBox.StandardButton.Close:
+                exit(1)
         return files[0]
 
     def choose_file_button_clicked(self):
